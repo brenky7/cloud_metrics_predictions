@@ -213,3 +213,4 @@ __marimo__/
 # project specific ignores
 data/
 .ipynb_checkpoints/
+other/
