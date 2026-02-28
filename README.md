@@ -24,9 +24,13 @@ The assignment requires the implementation of a model that predicts whether an i
 
 For this project I chose the Server Machine Dataset (SMD) from the OmniAnomaly repository. This dataset contains multivariate time-series data collected from a large internet company. It contains 38 metrics (CPU, Load, Memory, Disk, Network, etc.) collected from 28 distinct machines, which makes it similar to cloud service metrics.
 
-Although SMD is designed for unsupervised learning, the testing portion is fully labeled. To adapt this for supervised learning, I utilized the labeled test set of a specific machine instance (machine-1-1), splitting it chronologically into training and evaluation subsets. This subset of data is big enough for the purposes of this project.
+Although SMD is designed for unsupervised learning, the testing portion is fully labeled. To adapt this for supervised learning, I initially started with the labeled test set of a single machine instance (machine-1-1), splitting it chronologically into training and evaluation subsets.
 
-To prevent data leakage (look-ahead bias), the dataset was split chronologically. The first 70% of the timeline is used for training the model on historical patterns, while the subsequent 30% is held out strictly for evaluation.
+During exploratory data analysis, I observed that anomalies for a this machine were highly localized in time. In a time-series setting with a strict chronological split, this reduces the diversity of incident patterns available for training and makes evaluation less representative.
+
+To address this, I expanded the dataset to include all machines from SMD Group 1, which is 8 machines in total. Each machine is treated as an independent time-series entity, which increases the number and temporal diversity of incident intervals while keeping the evaluation time-consistent.
+
+To prevent data leakage (look-ahead bias), the dataset was split chronologically. Evaluation is always performed on future time relative to the corresponding training period.
 
 **Source:** [NetManAIOps/OmniAnomaly](https://github.com/NetManAIOps/OmniAnomaly/tree/master/ServerMachineDataset)
 
@@ -40,12 +44,12 @@ To prevent data leakage (look-ahead bias), the dataset was split chronologically
 - **Univariate Analysis:** Analyze the distribution and scale of individual features.
 - **Bivariate Analysis:** Investigate the correlation between individual features and anomaly occurrences.
 
-**Results
-:**
+**Results:**
 
 - **Data Cleaning:** Verified absence of missing values, identified and dropped zero-variance features that offer no predictive power.
 - **Univariate Analysis:** Analyzed distributions, revealing highly skewed, sparse event-driven metrics alongside continuous, stable metrics.
 - **Bivariate Analysis:** Mapped features against anomaly occurrences. Identified clear leading/coincident indicators.
+- **Dataset adjustment based on EDA:** Discovered that anomalies were temporally clustered, which complicates supervised training/evaluation with chronological splits. To improve incident coverage and dataset diversity, the project scope was expanded from a single machine to all machines in SMD Group 1.
 
 These tasks are implemented in the _data_analysis_ notebook.
 
@@ -67,7 +71,7 @@ These tasks are implemented in the _data_analysis_ notebook.
 
 These tasks are implemented in the _model_training_ notebook.
 
-### 4. Model Selection & Training Protocol
+### 4. Model Selection & Training
 
 **Goal:** Choose an appropriate algorithm and train it without violating time-series principles.
 

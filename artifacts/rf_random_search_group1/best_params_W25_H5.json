@@ -1,0 +1,10 @@
+{
+  "n_estimators": 300,
+  "min_samples_split": 20,
+  "min_samples_leaf": 20,
+  "max_samples": 0.5,
+  "max_features": 0.7,
+  "max_depth": null,
+  "class_weight": "balanced_subsample",
+  "bootstrap": true
+}

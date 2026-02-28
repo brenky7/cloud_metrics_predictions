@@ -1,0 +1,23 @@
+{
+  "W": 25,
+  "H": 5,
+  "n_candidates": 30,
+  "n_estimators_schedule": [
+    50,
+    150,
+    400
+  ],
+  "keep_ratio": 0.3333333333333333,
+  "best_ap": 0.6689614422037214,
+  "best_n_estimators": 400,
+  "best_params": {
+    "min_samples_split": 20,
+    "min_samples_leaf": 10,
+    "max_samples": 0.5,
+    "max_features": 0.7,
+    "max_depth": 14,
+    "class_weight": "balanced_subsample",
+    "bootstrap": true
+  },
+  "random_state": 2026
+}
