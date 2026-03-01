@@ -211,6 +211,5 @@ __marimo__/
 .DS_Store
 
 # project specific ignores
-data/
 .ipynb_checkpoints/
-other/
+data/*.txt

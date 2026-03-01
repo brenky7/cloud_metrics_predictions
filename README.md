@@ -26,7 +26,7 @@ For this project I chose the Server Machine Dataset (SMD) from the OmniAnomaly r
 
 Although SMD is designed for unsupervised learning, the testing portion is fully labeled. To adapt this for supervised learning, I initially started with the labeled test set of a single machine instance (machine-1-1), splitting it chronologically into training and evaluation subsets.
 
-During exploratory data analysis, I observed that anomalies for a this machine were highly localized in time. In a time-series setting with a strict chronological split, this reduces the diversity of incident patterns available for training and makes evaluation less representative.
+During exploratory data analysis, I observed that incidents for this machine were highly localized in time. In a time-series setting with a strict chronological split, this reduces the diversity of incident patterns available for training and makes evaluation less representative.
 
 To address this, I expanded the dataset to include all machines from SMD Group 1, which is 8 machines in total. Each machine is treated as an independent time-series entity, which increases the number and temporal diversity of incident intervals while keeping the evaluation time-consistent.
 
@@ -42,14 +42,14 @@ To prevent data leakage (look-ahead bias), the dataset was split chronologically
 
 - **Data Cleaning:** Assess data quality by checking for missing values.
 - **Univariate Analysis:** Analyze the distribution and scale of individual features.
-- **Bivariate Analysis:** Investigate the correlation between individual features and anomaly occurrences.
+- **Bivariate Analysis:** Investigate the correlation between individual features and incident occurrences.
 
 **Results:**
 
 - **Data Cleaning:** Verified absence of missing values, identified and dropped zero-variance features that offer no predictive power.
 - **Univariate Analysis:** Analyzed distributions, revealing highly skewed, sparse event-driven metrics alongside continuous, stable metrics.
-- **Bivariate Analysis:** Mapped features against anomaly occurrences. Identified clear leading/coincident indicators.
-- **Dataset adjustment based on EDA:** Discovered that anomalies were temporally clustered, which complicates supervised training/evaluation with chronological splits. To improve incident coverage and dataset diversity, the project scope was expanded from a single machine to all machines in SMD Group 1.
+- **Bivariate Analysis:** Mapped features against incident occurrences. Identified clear leading/coincident indicators.
+- **Dataset adjustment based on EDA:** Discovered that incidents were temporally clustered, which complicates supervised training/evaluation with chronological splits. To improve incident coverage and dataset diversity, the project scope was expanded from a single machine to all machines in SMD Group 1.
 
 These tasks are implemented in the _data_analysis_ notebook.
 
@@ -91,6 +91,10 @@ Based on information observed during EDA as well as the nature of the problem, I
 
 - **Input:** A sliding window of size $W$ containing the past values of the metrics.
 - **Output:** A binary label ($0=$ Normal, $1=$ Incident Imminent) for the next $H$ steps.
+
+**Tuning protocol**
+
+Hyperparameters were selected on the validation period using Average Precision (PR-AUC), which is appropriate for imbalanced “incident soon” labels. I ran an initial randomized search and then a successive-halving refinement, where I increased n_estimators by stage. To reduce selection variance from RF randomness, I evaluated top candidates across multiple seeds and choose the most stable configuration.
 
 These tasks are implemented in the _model_training_ notebook.
 
