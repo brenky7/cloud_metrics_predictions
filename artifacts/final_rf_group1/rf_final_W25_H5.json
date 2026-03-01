@@ -7,13 +7,13 @@
   "n_estimators_tuned": 400,
   "n_estimators_final": 800,
   "params": {
-    "max_depth": 14,
-    "min_samples_leaf": 10,
-    "min_samples_split": 20,
-    "max_features": 0.7,
     "bootstrap": true,
+    "class_weight": "balanced_subsample",
+    "max_depth": 14,
+    "max_features": 0.7,
     "max_samples": 0.5,
-    "class_weight": "balanced_subsample"
+    "min_samples_leaf": 10,
+    "min_samples_split": 20
   },
   "val_pos_rate": 0.09850226143693927
 }
