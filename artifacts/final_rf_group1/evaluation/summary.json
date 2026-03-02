@@ -1,0 +1,29 @@
+{
+  "W": 25,
+  "H": 5,
+  "threshold": 0.025855125625396682,
+  "target_incident_recall_val": 0.8,
+  "calib_use_tuned_trees": false,
+  "window_metrics_test": {
+    "ap": 0.5743099696460452,
+    "precision": 0.20707139300104124,
+    "recall": 0.8930105427567356,
+    "cm": [
+      [
+        35399,
+        17515
+      ],
+      [
+        548,
+        4574
+      ]
+    ]
+  },
+  "incident_metrics_test_strict": {
+    "incident_recall": 0.6571428571428571,
+    "n_incidents": 35,
+    "n_caught": 23,
+    "lead_time_mean": 3.5217391304347827,
+    "lead_time_median": 5.0
+  }
+}

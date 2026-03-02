@@ -37,6 +37,7 @@ To prevent data leakage (look-ahead bias), the dataset was split chronologically
 ### 2. Exploratory Data Analysis
 
 **Goal:** Understand the dataset of the server metrics to inform feature engineering and model expectations.
+These tasks are implemented in the _data_analysis_ notebook.
 
 **Tasks:**
 
@@ -55,7 +56,8 @@ These tasks are implemented in the _data_analysis_ notebook.
 
 ### 3. Problem Formulation
 
-**Goal:** Translate a raw time-series problem into a supervised Machine Learning problem that predicts future risk.
+**Goal:** Translate time-series problem into a supervised Machine Learning problem that predicts future risk.
+These tasks are implemented in the _model_training_ notebook.
 
 **Tasks:**
 
@@ -74,6 +76,7 @@ These tasks are implemented in the _model_training_ notebook.
 ### 4. Model Selection & Training
 
 **Goal:** Choose an appropriate algorithm and train it without violating time-series principles.
+These tasks are implemented in the _model_training_ notebook.
 
 **Tasks:**
 
@@ -96,11 +99,10 @@ Based on information observed during EDA as well as the nature of the problem, I
 
 Hyperparameters were selected on the validation period using Average Precision (PR-AUC), which is appropriate for imbalanced “incident soon” labels. I ran an initial randomized search and then a successive-halving refinement, where I increased n_estimators by stage. To reduce selection variance from RF randomness, I evaluated top candidates across multiple seeds and choose the most stable configuration.
 
-These tasks are implemented in the _model_training_ notebook.
-
 ### 5. Domain-Specific Evaluation and Analysis
 
 **Goal:** Document the architecture, justify decisions, and analyze failure cases.
+These tasks are implemented in the _evaluation_ notebook.
 
 **Tasks:**
 
@@ -109,4 +111,34 @@ These tasks are implemented in the _model_training_ notebook.
 
 **Results:**
 
-These tasks are implemented in the _model_training_ notebook.
+Evaluation was performed on the held-out test split for all machines in SMD Group 1, using the final Random Forest model with **W**=**25** and **H=5**. The alert threshold was selected on the validation split to target an incident-level recall of 0.80.
+
+- **Selected operating threshold:** t≈0.0259
+- **Window-level performance (pooled test set):**
+  - Average Precision (PR-AUC): **0.5743**
+  - Precision: **0.2071**
+  - Recall: **0.8930**
+  - Confusion matrix:
+    - TN = 35,399, FP = 17,515
+    - FN = 548, TP = 4,574
+
+* **Incident-level performance (pooled across machines):**
+  - Total incident intervals: **35**
+  - Caught incidents: **23**
+  - Incident recall: **0.6571**
+  - Lead time for caught incidents:
+    - Mean: **3.52** time steps
+    - Median: **5.0** time steps
+  - Missed incidents: **12**
+
+The results show that the operating point required to achieve high window-level recall leads to a large number of false positives. While the model reaches high recall at the window level, the incident-level recall on the test split is significantly below the 0.80 target used during validation, indicating limited generalization of the threshold to future data and possible distribution shift between the validation and test periods.
+
+**Feature importance analysis:**
+
+Impurity-based feature importance indicates that the most influential predictors are dominated by rolling mean and rolling standard deviation statistics. At the base-metric level, only a small subset of original metrics (e.g., `feat_12`, `feat_6`, `feat_15`, `feat_23`, `feat_8`) account for most of the total importance.
+
+Overall, the evaluation highlights a clear trade-off between early detection and alert volume: achieving high recall requires an aggressive threshold that produces frequent false alerts, and the incident-level detection performance on unseen data remains below the desired target.
+
+**Possible improvements:**
+
+Possibble future imrpvoements include adding more decision logic on top of the threshold, such as persistance, hysteresis or cooldowns. Trying a different model could also bring improvements.
